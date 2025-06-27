@@ -35,6 +35,7 @@ void setup() {
 
   if (test_mode){
     score = 90;
+    round_time = 3000 - score*20;
     // Reset Hex
     digitalWrite(hex_reset, HIGH);
     delay(100);
@@ -47,9 +48,6 @@ void setup() {
       digitalWrite(hex_increment, LOW);
       delay(50);
     }
-
-    // Set proper time frame of turn
-
   }
 }
 
@@ -77,7 +75,7 @@ void loop() {
     }
 
     // Set proper time frame of turn
-
+    
     initialized_for_test = true;
   }
 
