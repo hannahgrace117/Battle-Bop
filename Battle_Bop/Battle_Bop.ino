@@ -32,23 +32,6 @@ void setup() {
   // Randomize the turn generator
   Serial.begin(9600);
   randomSeed(analogRead(seed_generator));
-
-  if (test_mode){
-    score = 90;
-    round_time = 3000 - score*20;
-    // Reset Hex
-    digitalWrite(hex_reset, HIGH);
-    delay(100);
-    digitalWrite(hex_reset, LOW);
-
-    // Set hex to initialized score
-    for (int i = 0; i < score; i++){
-      digitalWrite(hex_increment, HIGH);
-      delay(50);
-      digitalWrite(hex_increment, LOW);
-      delay(50);
-    }
-  }
 }
 
 void loop() {
@@ -75,17 +58,21 @@ void loop() {
     }
 
     // Set proper time frame of turn
+    round_time = 3000 - score*20;
     
     initialized_for_test = true;
   }
 
   if (start == 0){
     delay(200);
+    Serial.print(test_mode);
     reset_game();
     // Clear serial monitor
     Serial.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     start_turn();
   }
+
+  delay(100);
 }
 
 void start_turn(){
@@ -146,17 +133,20 @@ void start_turn(){
   if (polling_inputs && millis() - round_start > round_time){
     Serial.print("out of time");
     again = process_input(0, num); // time expired
+    initialized_for_test = false;
+    test_mode = false;
   }
 
   if (again == true){
     start_turn();
   }
   else if (score == 99){ // User won, return to loop()
+    initialized_for_test = false;
+    test_mode = false;
     return 0;
   }
-  else{
-    process_input(0, num); // Time expired
-  }
+
+  else {}
 
   return 0;
 }
@@ -200,10 +190,11 @@ void victory(){
     test_mode = false; //  Exit test mode
     initialized_for_test = false;
   }
-  //loop();
 }
 
 void reset_game(){
+  Serial.print("IfT = "+String(initialized_for_test)+"\n");
+  Serial.print("Test mode ="+String(test_mode)+"\n");
   if (!initialized_for_test){
     // Reset hex
     digitalWrite(hex_reset, HIGH);
