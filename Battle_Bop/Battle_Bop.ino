@@ -202,8 +202,6 @@ void victory(){
 }
 
 void reset_game(){
-  Serial.print("IfT = "+String(initialized_for_test)+"\n");
-  Serial.print("Test mode ="+String(test_mode)+"\n");
   if (!initialized_for_test){
     // Reset hex
     digitalWrite(hex_reset, HIGH);
