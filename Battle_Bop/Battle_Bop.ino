@@ -40,7 +40,7 @@ void loop() {
   bool start = digitalRead(start_button);
   test_mode = digitalRead(punch_it);
   test_mode = !test_mode;
-  if (test_mode){
+  if (test_mode && !initialized_for_test){
     score = 90;
     delay(200);
 
@@ -63,6 +63,15 @@ void loop() {
     initialized_for_test = true;
   }
 
+  else if (test_mode && initialized_for_test){
+    score = 0;
+    // Reset Hex
+    digitalWrite(hex_reset, HIGH);
+    delay(100);
+    digitalWrite(hex_reset, LOW);
+    initialized_for_test = false;
+  }
+
   if (start == 0){
     delay(200);
     Serial.print(test_mode);
@@ -70,6 +79,7 @@ void loop() {
     // Clear serial monitor
     Serial.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     start_turn();
+    delay(200);
   }
 
   delay(100);
@@ -134,7 +144,6 @@ void start_turn(){
     Serial.print("out of time");
     again = process_input(0, num); // time expired
     initialized_for_test = false;
-    test_mode = false;
   }
 
   if (again == true){
@@ -142,11 +151,11 @@ void start_turn(){
   }
   else if (score == 99){ // User won, return to loop()
     initialized_for_test = false;
-    test_mode = false;
-    return 0;
   }
 
-  else {}
+  else {
+    initialized_for_test = false;
+  }
 
   return 0;
 }
