@@ -1,3 +1,6 @@
+#include <DFRobotDFPlayerMini.h>
+DFRobotDFPlayerMini myDFPlayer;
+
 #define red_led 13
 #define green_led 12
 #define start_button 11
@@ -30,34 +33,32 @@ void setup() {
   pinMode(hex_reset, OUTPUT);
 
   // Randomize the turn generator
-  Serial.begin(9600);
   randomSeed(analogRead(seed_generator));
 
-  if (test_mode){
-    score = 90;
-    round_time = 3000 - score*20;
-    // Reset Hex
-    digitalWrite(hex_reset, HIGH);
+  //Setup for DF player
+  Serial.begin(9600);
+  delay(1000);
+  if (!myDFPlayer.begin(Serial, false, true)) {
+    // Can't use Serial.println here without interfering
     delay(100);
-    digitalWrite(hex_reset, LOW);
-
-    // Set hex to initialized score
-    for (int i = 0; i < score; i++){
-      digitalWrite(hex_increment, HIGH);
-      delay(50);
-      digitalWrite(hex_increment, LOW);
-      delay(50);
-    }
+    while (true); // Hang if DFPlayer doesn't start
   }
+  
+  digitalWrite(green_led, HIGH);  
+  delay(100);
+  digitalWrite(green_led, LOW);
+
+  myDFPlayer.volume(15); // volume is range 0-30
+  delay(1000);
+  myDFPlayer.playMp3Folder(1); // play the welcome to Battle Bop sound
+  delay(3000);
 }
 
-void loop() {
-  //Play audio of "Battle Bop"
-
+void loop(){
   bool start = digitalRead(start_button);
   test_mode = digitalRead(punch_it);
   test_mode = !test_mode;
-  if (test_mode){
+  if (test_mode && !initialized_for_test){
     score = 90;
     delay(200);
 
@@ -75,17 +76,29 @@ void loop() {
     }
 
     // Set proper time frame of turn
+    round_time = 3000 - score*20;
     
     initialized_for_test = true;
+  }
+
+  else if (test_mode && initialized_for_test){
+    score = 0;
+    // Reset Hex
+    digitalWrite(hex_reset, HIGH);
+    delay(100);
+    digitalWrite(hex_reset, LOW);
+    initialized_for_test = false;
   }
 
   if (start == 0){
     delay(200);
     reset_game();
     // Clear serial monitor
-    Serial.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     start_turn();
+    delay(200);
   }
+
+  delay(100);
 }
 
 void start_turn(){
@@ -93,15 +106,18 @@ void start_turn(){
   int num = random(1,4);
   if (num == 1){
     // Play audio of "Kick It"
-    Serial.print("Kick It\n");
+    myDFPlayer.playMp3Folder(3);
+    delay(500);
   }
   else if (num == 2){
     // Play audio of "Dodge It"
-    Serial.print("Dodge It\n");
+    myDFPlayer.playMp3Folder(5);
+    delay(500);
   }
   else{
     // Play audio of "Punch It"
-    Serial.print("Punch It\n");
+    myDFPlayer.playMp3Folder(4);
+    delay(500);
   }
 
   polling_inputs = true;
@@ -143,19 +159,21 @@ void start_turn(){
     }
   }
 
-  if (polling_inputs && millis() - round_start > round_time){
-    Serial.print("out of time");
-    again = process_input(0, num); // time expired
+  if (polling_inputs && millis() - round_start > round_time){ // time expired
+    again = process_input(0, num);
+    myDFPlayer.playMp3Folder(8);
+    initialized_for_test = false;
   }
 
   if (again == true){
     start_turn();
   }
   else if (score == 99){ // User won, return to loop()
-    return 0;
+    initialized_for_test = false;
   }
-  else{
-    process_input(0, num); // Time expired
+
+  else {
+    initialized_for_test = false;
   }
 
   return 0;
@@ -180,8 +198,17 @@ bool process_input(int response, int prompt){
   }
 
   else if (response != prompt){ // User chose incorrectly
-    digitalWrite(red_led, HIGH); // Flash red led
-    // play audio of failing turn
+    // Display LCD of losing
+    myDFPlayer.playMp3Folder(7);
+    delay(1200);
+    myDFPlayer.playMp3Folder(8);
+    
+    for (int i = 0; i < 12; i++){
+    digitalWrite(red_led, HIGH);
+    delay(200);
+    digitalWrite(red_led,LOW);
+    delay(200);
+    }
   }
 
   else{} //do nothing
@@ -190,17 +217,18 @@ bool process_input(int response, int prompt){
 }
 
 void victory(){
-  for (int i = 0; i < 25; i++){
-    // Play audio of "You Won"
+  // Play audio of "You Won"
+    myDFPlayer.playMp3Folder(6);
+    delay(1000);
+  for (int i = 0; i < 12; i++){
     // Display LCD of winning
     digitalWrite(green_led, HIGH);
     delay(200);
     digitalWrite(green_led,LOW);
     delay(200);
-    test_mode = false; //  Exit test mode
-    initialized_for_test = false;
   }
-  //loop();
+  test_mode = false; //  Exit test mode
+  initialized_for_test = false;
 }
 
 void reset_game(){
