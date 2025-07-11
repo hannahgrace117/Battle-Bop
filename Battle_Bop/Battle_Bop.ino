@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 #define red_led 13
 #define green_led 12
 #define start_button 11
@@ -10,6 +11,8 @@
 #define hex_increment 8
 #define hex_reset 7
 =======
+=======
+>>>>>>> Stashed changes
 // Library for DF Player
 #include <DFRobotDFPlayerMini.h>
 DFRobotDFPlayerMini myDFPlayer;
@@ -34,6 +37,9 @@ LCDWIKI_SPI mylcd(ST7796S,7,8,6,-1); //model,cs,dc,reset,led
 #define seed_generator A5
 #define hex_increment 4
 #define hex_reset 3
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 unsigned long round_start;
 unsigned long round_time = 3000; // round timer (ms)
@@ -62,6 +68,8 @@ void setup() {
   pinMode(seed_generator, INPUT);
   pinMode(hex_increment, OUTPUT);
   pinMode(hex_reset, OUTPUT);
+<<<<<<< Updated upstream
+=======
   
   mylcd.Init_LCD();
   mylcd.Fill_Screen(BLACK);
@@ -74,6 +82,35 @@ void setup() {
   delay(100);
   digitalWrite(green_led, LOW);
 
+  digitalWrite(red_led, HIGH);  
+  delay(100);
+  digitalWrite(red_led, LOW);
+
+  // Randomize the turn generator
+  randomSeed(analogRead(seed_generator));
+
+  //Setup for DF player
+  Serial.begin(9600);
+  delay(1000);
+  if (!myDFPlayer.begin(Serial, false, true)) {
+    // Can't use Serial.println here without interfering
+    delay(100);
+    while (true); // Hang if DFPlayer doesn't start
+  }
+>>>>>>> Stashed changes
+  
+  mylcd.Init_LCD();
+  mylcd.Fill_Screen(BLACK);
+  mylcd.Set_Rotation(1);
+  mylcd.Set_Text_Mode(0);
+  mylcd.Set_Text_Back_colour(BLACK);
+  mylcd.Set_Text_Size(8);
+
+  digitalWrite(green_led, HIGH);  
+  delay(100);
+  digitalWrite(green_led, LOW);
+
+<<<<<<< Updated upstream
   digitalWrite(red_led, HIGH);  
   delay(100);
   digitalWrite(red_led, LOW);
@@ -105,6 +142,8 @@ void loop() {
   //Play audio of "Battle Bop"
 
 =======
+=======
+>>>>>>> Stashed changes
   myDFPlayer.volume(10); // volume is range 0-30
   delay(1000);
   print_to_screen(5);
@@ -114,6 +153,9 @@ void loop() {
 
 void loop(){
   
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   bool start = digitalRead(start_button);
   test_mode = digitalRead(punch_it);
@@ -155,6 +197,7 @@ void start_turn(){
   if (num == 1){
     // Play audio of "Kick It"
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     Serial.print("Kick It\n");
   }
   else if (num == 2){
@@ -165,6 +208,8 @@ void start_turn(){
     // Play audio of "Punch It"
     Serial.print("Punch It\n");
 =======
+=======
+>>>>>>> Stashed changes
     print_to_screen(num);
     myDFPlayer.playMp3Folder(3);
     
@@ -281,6 +326,9 @@ bool process_input(int response, int prompt){
     
     }
     
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   }
 
