@@ -1,5 +1,10 @@
+// Library for DF Player
 #include <DFRobotDFPlayerMini.h>
 DFRobotDFPlayerMini myDFPlayer;
+
+// Library for Screen
+#define MODEL ST7796S
+#define CS 
 
 #define red_led 13
 #define green_led 12
