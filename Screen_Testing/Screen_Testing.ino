@@ -28,26 +28,100 @@ void setup()
   mylcd.Init_LCD();
   mylcd.Fill_Screen(BLACK);
   mylcd.Set_Rotation(1);
+  mylcd.Set_Text_Mode(0);
 }
 
 void loop() 
 {
-  mylcd.Set_Text_Mode(0);
-  //display 1 times string
+  // idle
   mylcd.Fill_Screen(0x0000);
-  mylcd.Set_Text_colour(RED);
+  mylcd.Set_Text_colour(BLUE);
   mylcd.Set_Text_Back_colour(BLACK);
   mylcd.Set_Text_Size(8);
   mylcd.Print_String(" O", 0, 0);
-  mylcd.Print_String(" |", 0, 60);
-  mylcd.Print_String("/ \\_____", 0, 120);
-  mylcd.Set_Text_colour(GREEN);
+  mylcd.Print_String("/|\\", 0, 60);
+  mylcd.Print_String("/ \\", 0, 120);
+  mylcd.Set_Text_colour(RED);
   mylcd.Print_String(" O", 350, 0);
-  mylcd.Print_String(" |", 350, 60);
+  mylcd.Print_String("/|\\", 350, 60);
   mylcd.Print_String("/ \\", 350, 120);
-  while(1){
-    delay(100);
-  }
-
+  mylcd.Set_Text_Size(10);
+  mylcd.Set_Text_colour(MAGENTA);
+  mylcd.Set_Text_Back_colour(CYAN);
+  mylcd.Print_String(" FIGHT!  ", 0, 245);
   delay(3000);
+
+  // kick it
+  mylcd.Fill_Screen(0x0000);
+  mylcd.Set_Text_colour(BLUE);
+  mylcd.Set_Text_Back_colour(BLACK);
+  mylcd.Set_Text_Size(8);
+  mylcd.Print_String(" O", 0, 0);
+  mylcd.Print_String("/|\\", 0, 60);
+  mylcd.Print_String("/ \\_____", 0, 120);
+  mylcd.Set_Text_colour(RED);
+  mylcd.Print_String(" O", 350, 0);
+  mylcd.Print_String("/|\\", 350, 60);
+  mylcd.Print_String("/ \\", 350, 120);
+  delay(3000);
+
+  // idle
+  mylcd.Fill_Screen(0x0000);
+  mylcd.Set_Text_colour(BLUE);
+  mylcd.Set_Text_Back_colour(BLACK);
+  mylcd.Set_Text_Size(8);
+  mylcd.Print_String(" O", 0, 0);
+  mylcd.Print_String("/|\\", 0, 60);
+  mylcd.Print_String("/ \\", 0, 120);
+  mylcd.Set_Text_colour(RED);
+  mylcd.Print_String(" O", 350, 0);
+  mylcd.Print_String("/|\\", 350, 60);
+  mylcd.Print_String("/ \\", 350, 120);
+  mylcd.Set_Text_Size(10);
+  mylcd.Set_Text_colour(MAGENTA);
+  mylcd.Set_Text_Back_colour(CYAN);
+  mylcd.Print_String("  FIGHT! ", 0, 245);
+  delay(3000);
+
+  // // punch it
+  mylcd.Fill_Screen(0x0000);
+  mylcd.Set_Text_colour(BLUE);
+  mylcd.Set_Text_Back_colour(BLACK);
+  mylcd.Set_Text_Size(8);
+  mylcd.Print_String(" O", 0, 0);
+  mylcd.Print_String("/|----------", 0, 60);
+  mylcd.Print_String("/ \\", 0, 120);
+  mylcd.Set_Text_colour(RED);
+  mylcd.Print_String(" O", 350, 0);
+  mylcd.Print_String("/|\\", 350, 60);
+  mylcd.Print_String("/ \\", 350, 120);
+  delay(3000);
+
+  // idle
+  mylcd.Fill_Screen(0x0000);
+  mylcd.Set_Text_colour(BLUE);
+  mylcd.Set_Text_Back_colour(BLACK);
+  mylcd.Set_Text_Size(8);
+  mylcd.Print_String(" O", 0, 0);
+  mylcd.Print_String("/|\\", 0, 60);
+  mylcd.Print_String("/ \\", 0, 120);
+  mylcd.Set_Text_colour(RED);
+  mylcd.Print_String(" O", 350, 0);
+  mylcd.Print_String("/|\\", 350, 60);
+  mylcd.Print_String("/ \\", 350, 120);
+  delay(3000);
+
+  // dodge it 
+  mylcd.Fill_Screen(0x0000);
+  mylcd.Set_Text_colour(BLUE);
+  mylcd.Set_Text_Back_colour(BLACK);
+  mylcd.Set_Text_Size(8);
+  mylcd.Print_String(" O", 0, 65);
+  mylcd.Print_String("/ \\", 0, 125);
+  mylcd.Set_Text_colour(RED);
+  mylcd.Print_String("------ O", 50, 0);
+  mylcd.Print_String(" |\\", 340, 60);
+  mylcd.Print_String("/ \\", 340, 120);
+  delay(3000);
+
 }
