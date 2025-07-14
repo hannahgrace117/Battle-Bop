@@ -63,6 +63,10 @@ void loop()
   mylcd.Print_String(" O", 350, 0);
   mylcd.Print_String("/|\\", 350, 60);
   mylcd.Print_String("/ \\", 350, 120);
+  mylcd.Set_Text_Size(10);
+  mylcd.Set_Text_colour(MAGENTA);
+  mylcd.Set_Text_Back_colour(CYAN);
+  mylcd.Print_String(" THWAP!  ", 0, 245);
   delay(3000);
 
   // idle
@@ -80,7 +84,7 @@ void loop()
   mylcd.Set_Text_Size(10);
   mylcd.Set_Text_colour(MAGENTA);
   mylcd.Set_Text_Back_colour(CYAN);
-  mylcd.Print_String("  FIGHT! ", 0, 245);
+  mylcd.Print_String(" FIGHT!  ", 0, 245);
   delay(3000);
 
   // // punch it
@@ -95,6 +99,10 @@ void loop()
   mylcd.Print_String(" O", 350, 0);
   mylcd.Print_String("/|\\", 350, 60);
   mylcd.Print_String("/ \\", 350, 120);
+  mylcd.Set_Text_Size(10);
+  mylcd.Set_Text_colour(MAGENTA);
+  mylcd.Set_Text_Back_colour(CYAN);
+  mylcd.Print_String("  POW!  ", 0, 245);
   delay(3000);
 
   // idle
@@ -109,6 +117,10 @@ void loop()
   mylcd.Print_String(" O", 350, 0);
   mylcd.Print_String("/|\\", 350, 60);
   mylcd.Print_String("/ \\", 350, 120);
+  mylcd.Set_Text_Size(10);
+  mylcd.Set_Text_colour(MAGENTA);
+  mylcd.Set_Text_Back_colour(CYAN);
+  mylcd.Print_String(" FIGHT!  ", 0, 245);
   delay(3000);
 
   // dodge it 
@@ -122,6 +134,10 @@ void loop()
   mylcd.Print_String("------ O", 50, 0);
   mylcd.Print_String(" |\\", 340, 60);
   mylcd.Print_String("/ \\", 340, 120);
+  mylcd.Set_Text_Size(10);
+  mylcd.Set_Text_colour(MAGENTA);
+  mylcd.Set_Text_Back_colour(CYAN);
+  mylcd.Print_String(" WOOSH!   ", 0, 245);
   delay(3000);
 
 }
