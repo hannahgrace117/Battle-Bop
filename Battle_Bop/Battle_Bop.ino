@@ -5,12 +5,9 @@ DFRobotDFPlayerMini myDFPlayer;
 #include <LCDWIKI_GUI.h> //Core graphics library
 #include <LCDWIKI_SPI.h> //Hardware-specific library
 
-
-
 //the definiens of hardware spi mode as follow:
 //if the IC model is known or the modules is unreadable,you can use this constructed function
 LCDWIKI_SPI mylcd(ST7796S,7,8,6,-1); //model,cs,dc,reset,led
-
 
 #define red_led A0
 #define green_led A1
@@ -30,14 +27,12 @@ int score = 0;
 bool test_mode = false;
 bool initialized_for_test = false;
 
-
 #define  BLACK   0x0000
 #define BLUE    0x001F
 #define RED     0xF800
 #define GREEN   0x07E0
 #define MAGENTA 0xF81F
 #define CYAN    0x07FF
-
 
 void setup() {
   // Configure all pins
@@ -130,7 +125,6 @@ void loop(){
   if (start == 0){
     delay(200);
     reset_game();
-    // Clear serial monitor
     start_turn();
     delay(200);
   }
@@ -180,7 +174,7 @@ void start_turn(){
 
     dodge_x = analogRead(dodge_it_x);
     dodge_y = analogRead(dodge_it_y);
-    if (dodge_x > 700 || dodge_x < 300 || dodge_y > 700 || dodge_x < 300)
+    if (dodge_x > 700 || dodge_x < 300 || dodge_y > 700 || dodge_y < 300)
     {
       polling_inputs = false;
       again = process_input(2, num);
@@ -390,6 +384,4 @@ void print_to_screen(int i){
     mylcd.Print_String(" FIGHT!  ", 0, 245);
   }
   
-
-
 }
