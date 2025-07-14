@@ -2,20 +2,26 @@
 #include <DFRobotDFPlayerMini.h>
 DFRobotDFPlayerMini myDFPlayer;
 
-// Library for Screen
-#define MODEL ST7796S
-#define CS 
+#include <LCDWIKI_GUI.h> //Core graphics library
+#include <LCDWIKI_SPI.h> //Hardware-specific library
 
-#define red_led 13
-#define green_led 12
-#define start_button 11
-#define kick_it 10
-#define dodge_it_x 18
-#define dodge_it_y 17
-#define punch_it 9
-#define seed_generator 19
-#define hex_increment 8
-#define hex_reset 7
+
+
+//the definiens of hardware spi mode as follow:
+//if the IC model is known or the modules is unreadable,you can use this constructed function
+LCDWIKI_SPI mylcd(ST7796S,7,8,6,-1); //model,cs,dc,reset,led
+
+
+#define red_led A0
+#define green_led A1
+#define start_button 2
+#define kick_it 5
+#define dodge_it_x A3
+#define dodge_it_y A4
+#define punch_it A2
+#define seed_generator A5
+#define hex_increment 4
+#define hex_reset 3
 unsigned long round_start;
 unsigned long round_time = 3000; // round timer (ms)
 unsigned long round_end;
@@ -23,6 +29,15 @@ bool polling_inputs = false;
 int score = 0;
 bool test_mode = false;
 bool initialized_for_test = false;
+
+
+#define  BLACK   0x0000
+#define BLUE    0x001F
+#define RED     0xF800
+#define GREEN   0x07E0
+#define MAGENTA 0xF81F
+#define CYAN    0x07FF
+
 
 void setup() {
   // Configure all pins
@@ -36,6 +51,21 @@ void setup() {
   pinMode(seed_generator, INPUT);
   pinMode(hex_increment, OUTPUT);
   pinMode(hex_reset, OUTPUT);
+  
+  mylcd.Init_LCD();
+  mylcd.Fill_Screen(BLACK);
+  mylcd.Set_Rotation(3);
+  mylcd.Set_Text_Mode(0);
+  mylcd.Set_Text_Back_colour(BLACK);
+  mylcd.Set_Text_Size(8);
+
+  digitalWrite(green_led, HIGH);  
+  delay(100);
+  digitalWrite(green_led, LOW);
+
+  digitalWrite(red_led, HIGH);  
+  delay(100);
+  digitalWrite(red_led, LOW);
 
   // Randomize the turn generator
   randomSeed(analogRead(seed_generator));
@@ -53,13 +83,15 @@ void setup() {
   delay(100);
   digitalWrite(green_led, LOW);
 
-  myDFPlayer.volume(15); // volume is range 0-30
+  myDFPlayer.volume(20); // volume is range 0-30
   delay(1000);
+  print_to_screen(5);
   myDFPlayer.playMp3Folder(1); // play the welcome to Battle Bop sound
   delay(3000);
 }
 
 void loop(){
+  
   bool start = digitalRead(start_button);
   test_mode = digitalRead(punch_it);
   test_mode = !test_mode;
@@ -166,7 +198,6 @@ void start_turn(){
 
   if (polling_inputs && millis() - round_start > round_time){ // time expired
     again = process_input(0, num);
-    myDFPlayer.playMp3Folder(8);
     initialized_for_test = false;
   }
 
@@ -191,7 +222,7 @@ bool process_input(int response, int prompt){
     delay(500);
     digitalWrite(hex_increment, LOW);
     digitalWrite(green_led, LOW);
-    // display image on lcd
+    print_to_screen(prompt);// display image on lcd
     round_time -= 20; // decrease round time by 20ms
     round_start = 0; // reset round start time stamp
     score++; // Increase the user's score
@@ -202,10 +233,10 @@ bool process_input(int response, int prompt){
     victory();
   }
 
-  else if (response != prompt){ // User chose incorrectly
-    // Display LCD of losing
+  else if (response != prompt){ // User chose incorrectly    
     myDFPlayer.playMp3Folder(7);
     delay(1200);
+    print_to_screen(4);
     myDFPlayer.playMp3Folder(8);
     
     for (int i = 0; i < 12; i++){
@@ -214,6 +245,7 @@ bool process_input(int response, int prompt){
     digitalWrite(red_led,LOW);
     delay(200);
     }
+    
   }
 
   else{} //do nothing
@@ -222,11 +254,9 @@ bool process_input(int response, int prompt){
 }
 
 void victory(){
-  // Play audio of "You Won"
-    myDFPlayer.playMp3Folder(6);
-    delay(1000);
+    myDFPlayer.playMp3Folder(6); // Play audio of "You Won"
+    print_to_screen(6); // Show victory screen
   for (int i = 0; i < 12; i++){
-    // Display LCD of winning
     digitalWrite(green_led, HIGH);
     delay(200);
     digitalWrite(green_led,LOW);
@@ -237,6 +267,7 @@ void victory(){
 }
 
 void reset_game(){
+  print_to_screen(7);
   if (!initialized_for_test){
     // Reset hex
     digitalWrite(hex_reset, HIGH);
@@ -257,4 +288,108 @@ void reset_game(){
   digitalWrite(green_led, LOW);
 
   return 0;
+}
+
+
+void print_to_screen(int i){
+  
+  //display 1 times string
+  mylcd.Fill_Screen(0x0000);
+  
+  if(i == 1){ // kick
+    mylcd.Set_Text_colour(BLUE);
+    mylcd.Set_Text_Back_colour(BLACK);
+    mylcd.Set_Text_Size(8);
+    mylcd.Print_String(" O", 0, 0);
+    mylcd.Print_String("/|\\", 0, 60);
+    mylcd.Print_String("/ \\_____", 0, 120);
+    mylcd.Set_Text_colour(RED);
+    mylcd.Print_String(" O", 350, 0);
+    mylcd.Print_String("/|\\", 350, 60);
+    mylcd.Print_String("/ \\", 350, 120);
+    mylcd.Set_Text_Size(10);
+    mylcd.Set_Text_colour(MAGENTA);
+    mylcd.Set_Text_Back_colour(CYAN);
+    mylcd.Print_String(" THWAP!  ", 0, 245);
+  }
+
+  else if( i ==2){ // dodge
+    mylcd.Set_Text_colour(BLUE);
+    mylcd.Set_Text_Back_colour(BLACK);
+    mylcd.Set_Text_Size(8);
+    mylcd.Print_String(" O", 0, 65);
+    mylcd.Print_String("/ \\", 0, 125);
+    mylcd.Set_Text_colour(RED);
+    mylcd.Print_String("------ O", 50, 0);
+    mylcd.Print_String(" |\\", 340, 60);
+    mylcd.Print_String("/ \\", 340, 120);
+    mylcd.Set_Text_Size(10);
+    mylcd.Set_Text_colour(MAGENTA);
+    mylcd.Set_Text_Back_colour(CYAN);
+    mylcd.Print_String(" WOOSH!   ", 0, 245);
+  }
+
+  else if(i == 3){ // punch
+    mylcd.Set_Text_colour(BLUE);
+    mylcd.Set_Text_Back_colour(BLACK);
+    mylcd.Set_Text_Size(8);
+    mylcd.Print_String(" O", 0, 0);
+    mylcd.Print_String("/|----------", 0, 60);
+    mylcd.Print_String("/ \\", 0, 120);
+    mylcd.Set_Text_colour(RED);
+    mylcd.Print_String(" O", 350, 0);
+    mylcd.Print_String("/|\\", 350, 60);
+    mylcd.Print_String("/ \\", 350, 120);
+    mylcd.Set_Text_Size(10);
+    mylcd.Set_Text_colour(MAGENTA);
+    mylcd.Set_Text_Back_colour(CYAN);
+    mylcd.Print_String("  POW!  ", 0, 245);
+  }
+  
+  else if(i ==4){ // game over
+    mylcd.Set_Text_colour(RED);
+    mylcd.Set_Text_Back_colour(BLACK);
+    mylcd.Set_Text_Size(15);
+    mylcd.Print_String("GAME", 75, 45);
+    mylcd.Print_String("OVER", 75, 165);
+    mylcd.Set_Text_Size(8);
+  }
+
+  else if(i==5){ // start screen
+    mylcd.Set_Text_colour(BLUE);
+    mylcd.Set_Text_Size(15);
+    mylcd.Print_String("PRESS", 30, 45);
+    mylcd.Print_String("PLAY", 65, 165);
+    mylcd.Set_Text_Size(8);
+  }
+
+  else if (i == 6){ // victory
+    mylcd.Set_Text_colour(GREEN);
+    mylcd.Set_Text_Back_colour(BLACK);
+    mylcd.Set_Text_Size(15);
+    mylcd.Print_String("YOU", 125, 45);
+    mylcd.Print_String("WIN", 125, 165);
+    mylcd.Set_Text_Size(8);
+  }
+
+  else if (i == 7){ // idle
+    mylcd.Fill_Screen(0x0000);
+    mylcd.Set_Text_colour(BLUE);
+    mylcd.Set_Text_Back_colour(BLACK);
+    mylcd.Set_Text_Size(8);
+    mylcd.Print_String(" O", 0, 0);
+    mylcd.Print_String("/|\\", 0, 60);
+    mylcd.Print_String("/ \\", 0, 120);
+    mylcd.Set_Text_colour(RED);
+    mylcd.Print_String(" O", 350, 0);
+    mylcd.Print_String("/|\\", 350, 60);
+    mylcd.Print_String("/ \\", 350, 120);
+    mylcd.Set_Text_Size(10);
+    mylcd.Set_Text_colour(MAGENTA);
+    mylcd.Set_Text_Back_colour(CYAN);
+    mylcd.Print_String(" FIGHT!  ", 0, 245);
+  }
+  
+
+
 }
